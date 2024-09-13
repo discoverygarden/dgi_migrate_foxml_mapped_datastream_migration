@@ -1,0 +1,8 @@
+{
+    "name": "discoverygarden/dgi_migrate_foxml_mapped_datastream_migration",
+    "type": "drupal-module",
+    "license": "GPL-3.0-or-later",
+    "require": {
+        "discoverygarden/dgi_migrate": "^3.6"
+    }
+}
