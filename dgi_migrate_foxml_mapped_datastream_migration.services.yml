@@ -1,0 +1,5 @@
+---
+services:
+  plugin.manager.dgi_migrate_foxml_mapped_datastream_migration.model:
+    class: Drupal\dgi_migrate_foxml_mapped_datastream_migration\ModelPluginManager
+    parent: default_plugin_manager
