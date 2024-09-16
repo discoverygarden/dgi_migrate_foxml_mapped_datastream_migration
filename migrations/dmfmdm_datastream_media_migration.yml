@@ -1,0 +1,123 @@
+---
+id: dmfmdm_datastream_media_migration
+label: Create media entities for datastreams
+migration_group: foxml_to_dgis
+migration_tags:
+  - dgi_migrate_foxml_mapped_datastream_migration
+  - migration_group:foxml_to_dgis
+source:
+  plugin: embedded_data
+  data_rows: []
+  ids:
+    fid:
+      type: integer
+    datastream:
+      type: string
+destination:
+  plugin: entity:media
+  #default_bundle: file
+  # XXX: It appears that we cannot perform validation because:
+  # - the way we need to be able to map into multiple file fields, expecting
+  #   only that for the given bundle to succeed; however, validation checks that
+  #   everything appears valid... and specifying fields which are not in the
+  #   bundle breaks this.
+  # - we presently map audio/mpeg to .mpga, which is not in the list of allowed
+  #   extensions for audio.
+  #validate: true
+process:
+  field_media_of:
+    - plugin: migration_lookup
+      migration: dgis_nodes
+      source: fid
+      no_stub: true
+    - plugin: skip_on_empty
+      method: row
+
+  _parsed:
+    - plugin: dgi_migrate_foxml_mapped_datastream_migration.process.file_property
+      source: fid
+      property: uri
+    - plugin: foxml.parse
+      control_concurrency: true
+  _models:
+    - plugin: dgi_migrate.method
+      source: '@_parsed'
+      method: models
+    - plugin: skip_on_empty
+      method: row
+  name:
+    plugin: dgi_migrate.subproperty
+    property: label
+    source: '@_parsed'
+
+  _mapping:
+    - plugin: dgi_migrate_foxml_mapped_datastream_migration.process.datastream_map_lookup
+      source:
+        - '@_models'
+        - 'datastream'
+      missing_behavior: skip_row
+
+  _file_id:
+    - plugin: dgi_migrate.process.locking_migration_lookup
+      source:
+        - 'fid'
+        - 'datastream'
+      migration: dmfmdm_datastream_file_stub_migration
+      stub_id: dmfmdm_datastream_file_stub_migration
+      no_lock: true
+    - plugin: skip_on_empty
+      method: row
+      message: "Failed to lookup file."
+  _file:
+    plugin: dgi_migrate.load_entity
+    source: '@_file_id'
+    entity_type: entity:file
+  # XXX: Somewhat counter-intuitive, but it will just ignore those file field
+  # entries with which the target bundle does not deal.
+  field_media_audio_file: '@_file'
+  field_media_file: '@_file'
+  field_media_image/target_id: '@_file_id'
+  field_media_image/alt: '@name'
+  field_media_video_file: '@_file'
+
+  bundle:
+    - plugin: extract
+      source: '@_mapping'
+      index: [ media_type ]
+  field_file_size:
+    - plugin: dgi_migrate.method
+      method: getSize
+      source: '@_file'
+  field_media_use:
+    - plugin: extract
+      source: '@_mapping'
+      index: [ media_use ]
+    - plugin: dgi_migrate_foxml_mapped_datastream_migration.process.cached_entity_lookup
+      bundle_key: vid
+      bundle: islandora_media_use
+      value_key: field_external_uri
+      entity_type: taxonomy_term
+      # XXX: migrate_plus's case comparison makes assumptions about the entity's
+      # "main" property... we want "uri", but it assumes "value".
+      ignore_case: true
+  field_mime_type:
+    - plugin: dgi_migrate.method
+      method: getMimeType
+      source: '@_file'
+  status:
+    - plugin: default_value
+      default_value: 1
+  uid:
+    - plugin: dgi_migrate.method
+      method: getOwnerId
+      source: '@_file'
+migration_dependencies:
+  required:
+    - dgis_nodes
+    - dgis_foxml_files
+    - dmfmdm_datastream_file_stub_migration
+dependencies:
+  enforced:
+    module:
+      - dgi_migrate_foxml_standard_mods
+      - dgi_migrate_foxml_mapped_datastream_migration

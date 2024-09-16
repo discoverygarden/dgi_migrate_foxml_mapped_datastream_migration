@@ -1,0 +1,67 @@
+---
+id: dmfmdm_media_control
+label: Control process flow when ingesting datastream media.
+migration_group: foxml_to_dgis
+migration_tags:
+  - dgi_migrate_foxml_mapped_datastream_migration
+  - migration_group:foxml_to_dgis
+source:
+  plugin: dgi_migrate.source.migration
+  migration: dgis_foxml_files
+  skip_count: true
+destination:
+  plugin: dgi_migrate_foxml_mapped_datastream_migration.destination.noop
+  # XXX: We're not really dealing with translations here. To do so, seems like
+  # you would need separate migrations.
+  #translations: true
+  validate: false
+process:
+  _node_id:
+    - plugin: migration_lookup
+      migration: dgis_nodes
+      source: fid
+      no_stub: true
+    - plugin: skip_on_empty
+      method: row
+  # XXX: Just serves to populate the cache, so the later subprocessing doesn't
+  # contend to populate it.
+  _parsed:
+    - plugin: dgi_migrate_foxml_mapped_datastream_migration.process.file_property
+      source: fid
+      property: uri
+    - plugin: foxml.parse
+  _subprocess:
+    # Get the list of datastreams
+    - plugin: default_value
+      default_value: plugin.manager.dgi_migrate_foxml_mapped_datastream_migration.model
+    - plugin: callback
+      callable: ['\Drupal', 'service']
+    - plugin: dgi_migrate.method
+      method: getDatastreamIds
+    - plugin: multiple_values
+    - plugin: dgi_migrate.sub_process
+      propagate_skip: false
+      process_values: true
+      values:
+        _call:
+          - plugin: get
+            source:
+              - 'parent_row/source/fid'
+              - 'parent_value'
+          - plugin: flatten
+          - plugin: dgi_migrate.process.locking_migration_lookup
+            migration: dmfmdm_datastream_media_migration
+            stub_id: dmfmdm_datastream_media_migration
+            no_stub: false
+            no_lock: true
+migration_dependencies:
+  required:
+    - dgis_foxml_files
+    - dgis_nodes
+    - dmfmdm_datastream_media_migration
+dependencies:
+  enforced:
+    module:
+      - dgi_migrate
+      - dgi_migrate_foxml_standard_mods
+      - dgi_migrate_foxml_mapped_datastream_migration
