@@ -7,8 +7,16 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;
 use Drupal\dgi_migrate_foxml_mapped_datastream_migration\Attribute\Model;
 
+/**
+ * Model plugin manager service implementation.
+ */
 class ModelPluginManager extends DefaultPluginManager implements ModelPluginManagerInterface {
 
+  /**
+   * Memoized datastream IDs.
+   *
+   * @var array
+   */
   protected array $datastreamIds;
 
   /**
@@ -76,7 +84,7 @@ class ModelPluginManager extends DefaultPluginManager implements ModelPluginMana
   }
 
   /**
-   * (Re-)init our mapper.
+   * Init our mapper.
    */
   protected function initMapper() : void {
     $this->mapper = new $this->mapperClass($this);

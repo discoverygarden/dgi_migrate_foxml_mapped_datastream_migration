@@ -9,6 +9,11 @@ use Drupal\Component\Plugin\Mapper\MapperInterface;
  */
 class ModelPluginMapper implements MapperInterface {
 
+  /**
+   * Memoized mapping of mappings.
+   *
+   * @var array
+   */
   protected array $stash;
 
   /**

@@ -105,8 +105,8 @@ class MappedDatastreamSource extends SourcePluginBase implements ContainerFactor
    */
   public function fields() {
     return $this->wrapped->fields() + [
-        $this->datastreamKey => $this->t('Datastream ID to attempt to process.'),
-      ];
+      $this->datastreamKey => $this->t('Datastream ID to attempt to process.'),
+    ];
   }
 
   /**
@@ -121,10 +121,10 @@ class MappedDatastreamSource extends SourcePluginBase implements ContainerFactor
    */
   public function getIds() {
     return $this->wrapped->getIds() + [
-        $this->datastreamKey => [
-          'type' => 'string',
-        ],
-      ];
+      $this->datastreamKey => [
+        'type' => 'string',
+      ],
+    ];
   }
 
   /**
@@ -151,8 +151,8 @@ class MappedDatastreamSource extends SourcePluginBase implements ContainerFactor
       $info = $wrapped_row->getSource();
       foreach ($this->datastreamIds as $datastream_id) {
         yield "{$id}__{$datastream_id}" => ($info + [
-            $this->datastreamKey => $datastream_id,
-          ]);
+          $this->datastreamKey => $datastream_id,
+        ]);
       }
     }
   }
