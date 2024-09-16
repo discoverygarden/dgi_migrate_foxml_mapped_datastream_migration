@@ -2,6 +2,7 @@
 
 namespace Drupal\dgi_migrate_foxml_mapped_datastream_migration;
 
+use Drupal\Component\Plugin\Mapper\MapperInterface;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;
@@ -36,7 +37,6 @@ class ModelPluginManager extends DefaultPluginManager implements ModelPluginMana
       Model::class,
     );
 
-    $this->initMapper();
     $this->alterInfo('dgi_migrate_foxml_mapped_datastream_migration_model_plugin_info');
     $this->setCacheBackend($cache_backend, 'dgi_migrate_foxml_mapped_datastream_migration_model_plugin_info');
   }
@@ -77,24 +77,30 @@ class ModelPluginManager extends DefaultPluginManager implements ModelPluginMana
   /**
    * {@inheritDoc}
    */
-  public function clearCachedDefinitions() {
+  public function clearCachedDefinitions() : void {
     parent::clearCachedDefinitions();
     unset($this->datastreamIds);
-    $this->initMapper();
-  }
-
-  /**
-   * Init our mapper.
-   */
-  protected function initMapper() : void {
-    $this->mapper = new $this->mapperClass($this);
+    if ($this->mapper instanceof CachedMapperInterface) {
+      $this->mapper->clearCacheMappings();
+    }
   }
 
   /**
    * {@inheritDoc}
    */
-  protected function getFallbackPluginId($plugin_id, array $configuration = []) {
+  protected function getFallbackPluginId($plugin_id, array $configuration = []) : string {
     return 'unknown_model';
+  }
+
+  /**
+   * Set instance mapper.
+   *
+   * @param \Drupal\Component\Plugin\Mapper\MapperInterface $mapper
+   *   The mapper instance to use.
+   */
+  public function setMapper(MapperInterface $mapper) : static {
+    $this->mapper = $mapper;
+    return $this;
   }
 
 }
