@@ -7,7 +7,7 @@
 ## Introduction
 
 Migration overrides to:
-- iteration less during processing
+- iterate less during processing
 - enable more direct definition of datastream mapping between the source and destination, such that; for example, rederiving derivatives might be avoided.
 
 ## Requirements
