@@ -57,6 +57,22 @@ process:
         - 'datastream'
       missing_behavior: skip_row
 
+  field_media_use:
+    - plugin: extract
+      source: '@_mapping'
+      index: [ media_use ]
+    - plugin: dgi_migrate_foxml_mapped_datastream_migration.process.cached_entity_lookup
+      bundle_key: vid
+      bundle: islandora_media_use
+      value_key: field_external_uri
+      entity_type: taxonomy_term
+      # XXX: migrate_plus's case comparison makes assumptions about the entity's
+      # "main" property... we want "uri", but it assumes "value".
+      ignore_case: true
+    - plugin: skip_on_empty
+      method: row
+      message: "Failed to lookup media use term."
+
   _file_id:
     - plugin: dgi_migrate.process.locking_migration_lookup
       source:
@@ -88,21 +104,7 @@ process:
     - plugin: dgi_migrate.method
       method: getSize
       source: '@_file'
-  field_media_use:
-    - plugin: extract
-      source: '@_mapping'
-      index: [ media_use ]
-    - plugin: dgi_migrate_foxml_mapped_datastream_migration.process.cached_entity_lookup
-      bundle_key: vid
-      bundle: islandora_media_use
-      value_key: field_external_uri
-      entity_type: taxonomy_term
-      # XXX: migrate_plus's case comparison makes assumptions about the entity's
-      # "main" property... we want "uri", but it assumes "value".
-      ignore_case: true
-    - plugin: skip_on_empty
-      method: row
-      message: "Failed to lookup media use term."
+
   field_mime_type:
     - plugin: dgi_migrate.method
       method: getMimeType
