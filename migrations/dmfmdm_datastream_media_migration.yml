@@ -100,6 +100,9 @@ process:
       # XXX: migrate_plus's case comparison makes assumptions about the entity's
       # "main" property... we want "uri", but it assumes "value".
       ignore_case: true
+    - plugin: skip_on_empty
+      method: row
+      message: "Failed to lookup media use term."
   field_mime_type:
     - plugin: dgi_migrate.method
       method: getMimeType
