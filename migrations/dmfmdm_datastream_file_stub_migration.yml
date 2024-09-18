@@ -57,7 +57,12 @@ process:
         - '@_safe_pid'
         - '@_ext'
       delimiter: '.'
-  uri: '@_source_uri'
+  uri:
+    - plugin: dgi_migrate.foxml_file
+      source: '@_source_uri'
+      destination: constants/file_dest
+      date: '@created'
+      filename: '@filename'
   filesize:
     - plugin: callback
       source: '@uri'
