@@ -13,6 +13,8 @@ source:
       type: integer
     datastream_id:
       type: string
+  constants:
+    file_dest: 'repo-bin:/'
 destination:
   plugin: entity:file
   validate: true
