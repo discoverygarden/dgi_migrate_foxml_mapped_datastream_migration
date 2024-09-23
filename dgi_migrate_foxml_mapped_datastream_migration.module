@@ -1,0 +1,29 @@
+<?php
+
+/**
+ * @file
+ * General hook implementations.
+ */
+
+/**
+ * Implements hook_migration_plugins_alter().
+ */
+function dgi_migrate_foxml_mapped_datastream_migration_migration_plugins_alter(array &$migrations) : void {
+  foreach ($migrations as $id => $migration) {
+    if (!isset($migration['migration_tags']) || !is_array($migration['migration_tags'])) {
+      continue;
+    }
+    if (
+      in_array('dgi_migrate_foxml_standard_mods', $migration['migration_tags'], FALSE)
+      &&
+      in_array('migration_group:foxml_to_dgis', $migration['migration_tags'], FALSE)
+      &&
+      array_intersect($migration['migration_tags'], [
+        'dgi_migrate_foxml_standard_mods:file_migration',
+        'dgi_migrate_foxml_standard_mods:media_migration',
+      ])
+    ) {
+      unset($migrations[$id]);
+    }
+  }
+}

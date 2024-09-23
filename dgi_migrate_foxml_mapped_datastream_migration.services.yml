@@ -1,0 +1,15 @@
+---
+services:
+  plugin.manager.dgi_migrate_foxml_mapped_datastream_migration.model:
+    class: Drupal\dgi_migrate_foxml_mapped_datastream_migration\ModelPluginManager
+    parent: default_plugin_manager
+    calls:
+      - [setMapper, ['@dgi_migrate_foxml_mapped_datastream_migration.mapper']]
+  dgi_migrate_foxml_mapped_datastream_migration.mapper:
+    class: Drupal\dgi_migrate_foxml_mapped_datastream_migration\ModelPluginMapper
+    arguments:
+      - '@plugin.manager.dgi_migrate_foxml_mapped_datastream_migration.model'
+    public: false
+  logger.channel.dgi_migrate_foxml_mapped_datastream_migration:
+    parent: logger.channel_base
+    arguments: ['dgi_migrate_foxml_mapped_datastream_migration']
