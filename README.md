@@ -34,7 +34,7 @@ Current maintainers:
 
 Sponsers:
 
-* [CTDA: Connecticut Digital Archive]
+* [CTDA: Connecticut Digital Archive](https://ctdigitalarchive.org/)
 * University of Iowa
 
 ## Development/Contribution
