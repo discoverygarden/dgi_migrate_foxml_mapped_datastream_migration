@@ -32,7 +32,7 @@ Current maintainers:
 
 * [discoverygarden](http://www.discoverygarden.ca)
 
-Sponsers:
+Sponsors:
 
 * [CTDA: Connecticut Digital Archive](https://ctdigitalarchive.org/)
 * University of Iowa
