@@ -32,6 +32,11 @@ Current maintainers:
 
 * [discoverygarden](http://www.discoverygarden.ca)
 
+Sponsers:
+
+* [CTDA: Connecticut Digital Archive]
+* University of Iowa
+
 ## Development/Contribution
 
 If you would like to contribute to this module, please check out github's helpful
