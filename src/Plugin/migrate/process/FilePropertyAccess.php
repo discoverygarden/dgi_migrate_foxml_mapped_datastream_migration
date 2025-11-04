@@ -48,7 +48,7 @@ class FilePropertyAccess extends ProcessPluginBase implements ContainerFactoryPl
   /**
    * {@inheritDoc}
    */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition, MigrationInterface $migration = NULL) {
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition, ?MigrationInterface $migration = NULL) {
     $instance = new static($configuration, $plugin_id, $plugin_definition, $migration);
 
     $instance->database = $container->get('database');

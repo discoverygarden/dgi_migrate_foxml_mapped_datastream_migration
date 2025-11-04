@@ -35,7 +35,7 @@ class DatastreamMapLookup extends ProcessPluginBase implements ContainerFactoryP
    *
    * @throws \Drupal\migrate\MigrateException
    */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition, MigrationInterface $migration = NULL) {
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition, ?MigrationInterface $migration = NULL) {
     $instance = new static($configuration, $plugin_id, $plugin_definition);
 
     $instance->modelPluginManager = $container->get('plugin.manager.dgi_migrate_foxml_mapped_datastream_migration.model');
