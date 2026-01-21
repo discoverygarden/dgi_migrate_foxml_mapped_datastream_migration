@@ -122,6 +122,7 @@ migration_dependencies:
     - dgis_nodes
     - dgis_foxml_files
     - dmfmdm_datastream_file_stub_migration
+    - dmfmdm_media_use_terms
 dependencies:
   enforced:
     module:

@@ -1,0 +1,51 @@
+---
+id: dmfmdm_media_use_terms
+migration_group: foxml_to_dgis
+migration_tags:
+  - dgi_migrate_foxml_mapped_datastream_migration
+  - migration_group:foxml_to_dgis
+label: 'Ensure terms for media usages are present.'
+source:
+  plugin: embedded_data
+  data_rows:
+    - name: Service file
+      uri: http://pcdm.org/use#ServiceFile
+    - name: Original file
+      uri: http://pcdm.org/use#OriginalFile
+    - name: Extracted text
+      uri: http://pcdm.org/use#ExtractedText
+    - name: Thumbnail
+      uri: http://pcdm.org/use#ThumbnailImage
+    - name: FITS
+      uri: https://projects.iq.harvard.edu/fits
+    - name: HOCR
+      uri: https://discoverygarden.ca/use#hocr
+    - name: Maintained OCR
+      uri: https://lib.uconn.edu/find/connecticut-digital-archive:maintainedOcr
+    - name: Preservation master
+      uri: http://pcdm.org/use#PreservationMasterFile
+  ids:
+    uri:
+      type: string
+destination:
+  plugin: 'entity:taxonomy_term'
+  default_bundle: islandora_media_use
+  overwrite_properties: []
+process:
+  field_external_uri: uri
+  vid:
+    plugin: default_value
+    default_value: islandora_media_use
+  tid:
+    - plugin: entity_lookup
+      source: uri
+      bundle_key: vid
+      bundle: islandora_media_use
+      value_key: field_external_uri
+      entity_type: taxonomy_term
+      # XXX: migrate_plus's case comparison makes assumptions about the entity's
+      # "main" property... we want "uri", but it assumes "value".
+      ignore_case: true
+    - plugin: skip_on_empty
+      method: process
+  name: name
